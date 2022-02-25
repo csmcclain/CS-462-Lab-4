@@ -3,7 +3,7 @@
     <div>
       <NuxtLogo />
       <h1 class="title">
-        backend
+        frontend
       </h1>
       <h2 class="subtitle">
         Welcome to the View UI + Nuxt.js template
