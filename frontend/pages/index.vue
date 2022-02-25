@@ -1,21 +1,26 @@
 <template>
   <div class="container">
-    <div>
-      <h1 class="title">
-        Current Temperature: {{currentTemp}}
-      </h1>
-      <h2 class="subtitle">
-        Recent Temperature Readings:
-      </h2>
-      <li v-for="reading in readings" class="moresubtitle">
-        Reading of {{reading.temperature}} was logged at {{reading.time}}
-      </li>
-      <h2 class="subtitle">
-        Temperature Threshold Violations:
-      </h2>
-      <li v-for="violation in violations" class="moresubtitle">
-        A Violation of {{violation.temperature}} was logged at {{violation.time}}
-      </li>
+    <h1 class="title">
+      Current Temperature: {{currentTemp}}
+    </h1>
+    <button><NuxtLink to="/profile">Go to the Sensor Profile</NuxtLink></button>
+    <div class="flex">
+      <div>
+        <h2 class="subtitle">
+          Recent Temperature Readings:
+        </h2>
+        <li v-for="reading in readings" class="moresubtitle">
+          Reading of {{reading.temperature}} was logged at {{reading.time}}
+        </li>
+      </div>
+      <div>
+        <h2 class="subtitle">
+          Temperature Threshold Violations:
+        </h2>
+        <li v-for="violation in violations" class="moresubtitle">
+          A Violation of {{violation.temperature}} was logged at {{violation.time}}
+        </li>
+      </div>
     </div>
   </div>
 </template>
@@ -77,7 +82,6 @@ export default {
 .container {
   margin: 0 auto;
   min-height: 100vh;
-  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -119,5 +123,10 @@ export default {
 
 .links {
   padding-top: 15px;
+}
+
+.flex {
+  flex-direction: row;
+  display: flex
 }
 </style>
