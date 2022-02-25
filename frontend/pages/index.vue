@@ -21,13 +21,53 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'IndexPage',
   data() {
     return {
-      currentTemp: 72.013,
-      readings: [{temperature: 72.013, time: 'now'}],
-      violations: [{temperature: 78.0, time: 'earlier'}, ]
+      currentTemp: 0,
+      readings: [],
+      violations: [],
+      baseURL: 'http://localhost:3000/sky/cloud/ckz53u47l0023j2ao80aj1xfx/'
+    }
+  },
+  created() {
+    this.getAllTemperatures()
+    this.getTemperatureViolations()
+    
+  },
+  methods: {
+    async getAllTemperatures() {
+      let response = await axios.get(this.baseURL + 'temperature_store/temperatures');
+      if (response.status !== 200) {
+        return;
+      }
+      this.readings = [];
+      for (const [key, value] of Object.entries(response.data)) {
+        let newReading = {
+          time: key,
+          temperature: value['temperature']
+        };
+        this.readings.push(newReading)
+      }
+      this.readings = this.readings.reverse()
+      this.currentTemp = this.readings[0]['temperature'];
+    },
+    async getTemperatureViolations() {
+      let response = await axios.get(this.baseURL + 'temperature_store/threshold_violations');
+      if (response.status !== 200) {
+        return;
+      }
+      this.violations = [];
+      for (const [key, value] of Object.entries(response.data)) {
+        let newReading = {
+          time: key,
+          temperature: value['temperature']
+        };
+        this.violations.push(newReading)
+      }
+      this.violations = this.violations.reverse();
     }
   },
 }
