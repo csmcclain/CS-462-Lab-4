@@ -1,31 +1,35 @@
 <template>
   <div class="container">
     <div>
-      <NuxtLogo />
       <h1 class="title">
-        frontend
+        Current Temperature: {{currentTemp}}
       </h1>
       <h2 class="subtitle">
-        Welcome to the View UI + Nuxt.js template
+        Recent Temperature Readings:
       </h2>
-      <div class="links">
-        <Button type="primary" target="_blank" rel="noopener noreferrer" to="https://nuxtjs.org/">
-          Documentation
-        </Button>
-        <Button target="_blank" rel="noopener noreferrer" to="https://github.com/nuxt/nuxt.js">
-          GitHub
-        </Button>
-        <Button target="_blank" rel="noopener noreferrer" to="https://www.iviewui.com/">
-          View UI
-        </Button>
-      </div>
+      <li v-for="reading in readings" class="moresubtitle">
+        Reading of {{reading.temperature}} was logged at {{reading.time}}
+      </li>
+      <h2 class="subtitle">
+        Temperature Threshold Violations:
+      </h2>
+      <li v-for="violation in violations" class="moresubtitle">
+        A Violation of {{violation.temperature}} was logged at {{violation.time}}
+      </li>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  data() {
+    return {
+      currentTemp: 72.013,
+      readings: [{temperature: 72.013, time: 'now'}],
+      violations: [{temperature: 78.0, time: 'earlier'}, ]
+    }
+  },
 }
 </script>
 
@@ -60,6 +64,14 @@ export default {
 .subtitle {
   font-weight: 300;
   font-size: 42px;
+  color: #526488;
+  word-spacing: 5px;
+  padding-bottom: 15px;
+}
+
+.moresubtitle {
+  font-weight: 300;
+  font-size: 30px;
   color: #526488;
   word-spacing: 5px;
   padding-bottom: 15px;
