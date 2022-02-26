@@ -66,10 +66,10 @@ ruleset temperature_store {
 
         // Set variables that are needed (prelude)
         pre {
-            temperature_threshold = event:attrs{"threshold"}.klog("Set temperature_threshold to: ")
-            new_temp_violations = ent:temp_violation_storage.filter(function(v,k) {
-                value = ent:temp_violation_storage{k}
-                value["temperature"] >= temperature_threshold
+            temperature_threshold = event:attrs{"threshold"}.klog("Received temperature_threshold in temp_store as: ")
+            new_temp_violations = ent:temp_storage.filter(function(v,k) {
+                value = ent:temp_storage{k}.klog("now comparing this value")
+                value != null && value["temperature"] > temperature_threshold
             });
         }
 
