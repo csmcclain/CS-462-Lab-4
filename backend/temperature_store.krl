@@ -60,6 +60,26 @@ ruleset temperature_store {
         }
     }
 
+    rule recalculate_threshold_violations {
+        // Define when the rule is selected
+        select when wovyn configuration_change
+
+        // Set variables that are needed (prelude)
+        pre {
+            temperature_threshold = event:attrs{"threshold"}.klog("Set temperature_threshold to: ")
+            new_temp_violations = ent:temp_violation_storage.filter(function(v,k) {
+                value = ent:temp_violation_storage{k}
+                value["temperature"] >= temperature_threshold
+            });
+        }
+
+        always {
+            ent:temp_violation_storage := new_temp_violations
+        }
+
+
+    }
+
     rule clear_temperatures {
         select when sensor reading_reset
 

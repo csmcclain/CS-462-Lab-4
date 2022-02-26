@@ -8,17 +8,17 @@ ruleset sensor_profile {
     global {
         get_sensor_info = function() {
             {
-                "location": ent:location,
-                "name": ent:name,
-                "SMS_receiver": ent:smsReceiver,
-                "threshold": ent:threshold
+                "location": ent:location == null => "Not Configured" | ent:location,
+                "name": ent:name == null => "Not Configured" | ent:name,
+                "SMS_receiver": ent:smsReceiver == null => "Not Configured" | ent:smsReceiver,
+                "threshold": ent:threshold == null => 75 | ent:threshold
             }
         }
     }
 
 
     rule process_profile_update {
-        // Define when rule is selecgted
+        // Define when rule is selected
         select when sensor profile_update
 
         // Set variables that are needed (prelude)
@@ -34,6 +34,11 @@ ruleset sensor_profile {
             ent:name := name;
             ent:smsReceiver := smsReceiver;
             ent:threshold := threshold;
+
+            raise wovyn event "configuration_change" attributes {
+                "smsReceiver": smsReceiver,
+                "threshold": threshold
+            }
         }
     }
 }

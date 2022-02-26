@@ -1,17 +1,23 @@
 ruleset wovyn_base {
 
+
     meta {
-        use module twilio.api alias twilio
-            with
-                accountSid = meta:rulesetConfig{"accountSid"}
-                authToken = meta:rulesetConfig{"authToken"}
+        // use module twilio.api alias twilio
+        //     with
+        //         accountSid = meta:rulesetConfig{"accountSid"}
+        //         authToken = meta:rulesetConfig{"authToken"}
+        shares get_threshold, get_receiver_of_sms
     }
 
     // Define global variables.
     global {
-        temperature_threshold = 75
         sender_of_sms = meta:rulesetConfig{"smsSender"}
-        receiver_of_sms = ""
+        get_threshold = function() {
+            ent:temperature_threshold == null => 75 | ent:temperature_threshold
+        }
+        get_receiver_of_sms = function() {
+            ent:receiver_of_sms == null => "8013191995" | ent:receiver_of_sms
+        }
     }
 
 
@@ -47,10 +53,11 @@ ruleset wovyn_base {
         pre {
             temperature = event:attrs{"temperature"}.klog("Received the following temperature in find_high_temps: ")
             timestamp = event:attrs{"timestamp"}
+            threshold = ent:temperature_threshold == null => 75 | ent:temperature_threshold
         }
 
         // Action will be taken depending if the temperature exceeds the threshold
-        if (temperature > temperature_threshold) then noop()
+        if (temperature >= threshold) then noop()
 
         //Postlude will be evaulated if the action is fired
         fired {
@@ -68,10 +75,27 @@ ruleset wovyn_base {
         // Set variables that are needed (prelude)
         pre {
             message = "A reading of " + event:attrs{"temperature"} + " was read at " + event:attrs{"timestamp"}
+            receiver = ent:receiver_of_sms == null => "8013191995" | ent:receiver_of_sms
         }
 
         // No action is needed we will always evaluate the postlude
-        twilio:sendSMS(receiver_of_sms, sender_of_sms, message)
+        //twilio:sendSMS(receiver_of_sms, sender_of_sms, message)
+    }
+
+    rule configuration_change {
+        // Define when rule is selected
+        select when wovyn configuration_change
+
+        // Set variables that are needed (prelude)
+        pre {
+            receiver = event:attrs{"smsReceiver"}.klog("Set receiver_of_sms to: ")
+            temperature = event:attrs{"threshold"}.klog("Set temperature_threshold to: ")
+        }
+
+        always {
+            ent:temperature_threshold := temperature
+            ent:receiver_of_sms := receiver
+        }
     }
 
 }
