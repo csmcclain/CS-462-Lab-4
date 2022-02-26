@@ -1,0 +1,18 @@
+1) What design decisions did you make in your rulesets that made this assignment easier or harder? Why?
+    I think there are three things that I did that made this assignment easier for me. The first was having
+    the twilio api easy to import. That ment adding the sms message capability easy! Additionally I think that
+    storing all temperatures was a good idea, it made recalculating all the threshold violations easier. Lastly
+    I think the use of compartmentalizing rules to specific actions helped the system function together.
+
+2) Explain how the sensor_profile ruleset isolates state and processes regarding the sensor profile from other rulesets.
+    The sensor_profile stores information that is unique to itself, as well as shares information that other rulesets
+    need. The sensor_profile can keep track of the sensor name and location, while also maintaining/forwarding on the 
+    sms number and threshold value to other pieces of the code that need them.
+
+3) How do other rulesets use the sensor_profile to get data?
+    Other rulesets have rules that listen for specific events fired off from the sensor_profile. In those events rulesets
+    can find the data they need to reconfigure themselves.
+
+4) Could they use it to store new values? How?
+    Yes they can! Because data can be sent in each event, rulesets that listen for an event can grab data from that event
+    and use it to generate/store additional data.
